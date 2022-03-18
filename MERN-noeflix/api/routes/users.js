@@ -29,8 +29,45 @@ router.put('/:id', verify, async (req, res) => {
 });
 
 //DELETE USER METHOD
+
+router.delete('/:id', verify, async (req, res) => {
+	if (req.user.id === req.params.id || req.user.isAdmin) {
+		try {
+			await User.findByIdAndDelete(req.params.id);
+			res.status(200).json('User Has been Deleted');
+		} catch (error) {
+			res.status(500).json(error);
+		}
+	} else {
+		res.status(403).json("Can't Delete User, Forbidden access");
+	}
+});
 //GET ONE USER METHOD
+
+router.get('/find/:id', async (req, res) => {
+	try {
+		const user = await User.findById(req.params.id);
+		const { password, ...info } = user._doc;
+		res.status(200).json(info);
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
 //GET ALL USER METHOD
+
+router.get('/', verify, async (req, res) => {
+	const query = req.query.new;
+	if (req.user.isAdmin) {
+		try {
+			const users = query ? await User.find().sort({ _id: -1 }).limit(2) : await User.find();
+			res.status(200).json(users);
+		} catch (error) {
+			res.status(500).json(error);
+		}
+	} else {
+		res.status(403).json('Forbidden access, You are not an Admin');
+	}
+});
 //GET USER STATISTIC METHOD
 
 module.exports = router;
