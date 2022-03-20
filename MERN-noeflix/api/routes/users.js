@@ -70,4 +70,24 @@ router.get('/', verify, async (req, res) => {
 });
 //GET USER STATISTIC METHOD
 
+router.get('/stats', async (req, res) => {
+	const today = new Date();
+	const lastYear = today.setFullYear(today.setFullYear() - 1);
+
+	const monsthArray = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+});
+
 module.exports = router;
