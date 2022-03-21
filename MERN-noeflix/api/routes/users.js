@@ -88,6 +88,25 @@ router.get('/stats', async (req, res) => {
 		'November',
 		'December'
 	];
+
+	try {
+		const data = await User.aggregate([
+			{
+				$project: {
+					month: { $month: '$createdAt' }
+				}
+			},
+			{
+				$group: {
+					_id: '$month',
+					total: { $sum: 1 }
+				}
+			}
+		]);
+		res.status(200).json(data);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 });
 
 module.exports = router;
